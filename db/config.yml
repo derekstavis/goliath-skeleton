@@ -1,13 +1,13 @@
 development:
   host: localhost
-  adapter: em_mysql2
+  adapter: em_postgresql
   database: goliathskel-dev
   pool: 5
   timeout: 5000
 
 production:
   host: localhost
-  adapter: em_mysql2
+  adapter: em_postgresql
   encoding: utf8
   reconnect: false
   database: goliathskel-prod
@@ -17,7 +17,7 @@ production:
 
 test:
   host: localhost
-  adapter: mysql2
+  adapter: em_postgresql
   database: goliathskel-test
   pool: 5
   timeout: 5000

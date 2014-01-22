@@ -1,6 +1,6 @@
 Dir["./app/apis/**/*.rb"].each { |f| require f }
 
-class API < Grape::API  
+class API < Grape::API
   format :json
   default_format :json
 
@@ -12,7 +12,7 @@ class API < Grape::API
   end
 
   helpers do
-    
+
     def logger
       API.logger
     end
@@ -27,28 +27,17 @@ class API < Grape::API
 
   end
 
-  before do
-    # sets the locale based on the incoming param, if provided, otherwise :en
-    begin
-      I18n.locale = params[:locale] ? params[:locale].downcase.to_sym  : :en
-    rescue
-      I18n.locale = :en
-    end    
-  end
-  
-
   resource 'servicehealth' do
     # GET http://0.0.0.0:9000/servicehealth/
     desc "Returns a basic status report."
     get "/" do
       MultiJson.dump({ status: 'OK', environment: Goliath::env })
-    end      
+    end
   end
 
   # NOTE: the mounts need to be *after* helpers and all that, or things get confused
 
   # if you remove/modify the next comment, the gen script won't be able to auto-add mount lines
   # -- ENDPOINT MOUNTS --
-  mount APIv1::Unlocks
-  
+
 end

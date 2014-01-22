@@ -27,11 +27,3 @@ Rabl.configure do |config|
   # config.xml_options = { :dasherize  => true, :skip_types => false }
   config.view_paths = ['app/views']
 end
-
-
-# ---- CONFIGURE i18N FOR LOCALIZATION
-I18n.load_path += Dir['app/locale/*.yml']
-I18n.locale = :en
-# this sets up fallback support, meaning they'll get 'en'
-# if we can't find a translation for their locale
-I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)

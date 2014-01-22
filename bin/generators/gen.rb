@@ -10,7 +10,7 @@ module Cleanup
 
     if Dir["#{relative_path}/*"].empty?
       puts "      #{'remove'.light_green}  #{relative_path}"
-      Dir.unlink(relative_path) 
+      Dir.unlink(relative_path)
     else
       puts "      #{'not empty'.light_red}  #{relative_path}"
     end
@@ -35,7 +35,7 @@ class Gen < Thor
     self.version = version
     self.name = name
     puts "    Creating resource `#{name.dup.light_magenta}` for version `#{version.dup.light_magenta}`..."
-    
+
     # create the api resource file
     template "templates/create_resource.tt", "app/apis/#{version}/#{name.downcase}.rb"
 
@@ -44,7 +44,13 @@ class Gen < Thor
 
     # add a base.json.rabl to that view directory
     template "templates/create_base_rabl.tt", "app/views/api_#{version}/#{name.downcase}/base.json.rabl"
-    
+
+    # add a factory and spec tests
+    template "templates/create_factory.tt", "spec/factories/#{version}_#{name.downcase}.rb"
+
+    # add a factory and spec tests
+    template "templates/create_spec.tt", "spec/api/#{version}_#{name.downcase}.rb"
+
     # add a new migration
     now = Time.now.strftime("%Y%m%d%H%M%S")
     template "templates/create_model_migration.tt", "db/migrate/#{now}_create_#{name.downcase}.rb"
@@ -60,11 +66,13 @@ class Gen < Thor
   desc "destroy_resource <version> <plural_name>", "destroys the named resource and removes all the things"
   def destroy_resource(version, name)
     self.version = version
-    self.name = name    
+    self.name = name
     puts "    Destroying resource `#{name.dup.light_magenta}` on version `#{version.dup.light_magenta}`..."
     remove_file "app/apis/#{version}/#{name.downcase}.rb"
     remove_file "app/models/#{name.downcase.singularize}.rb"
     remove_file "app/views/api_#{version}/#{name.downcase}/base.json.rabl"
+    remove_file "spec/factories/#{version}_#{name.downcase}.rb"
+    remove_file "spec/api/#{version}_#{name.downcase}.rb"
     Dir["db/migrate/*_create_#{name.downcase}.rb"].each { |f| remove_file f }
     puts "      #{'delete'.light_green}  mount API#{version}::#{name.capitalize}"
     gsub_file "app/api.rb", "  mount API#{version}::#{name.capitalize}\n", "", verbose: false

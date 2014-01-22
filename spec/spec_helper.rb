@@ -42,8 +42,6 @@ RSpec.configure do |config|
   end
 
   config.after do
-    # make sure we reset back to default locale in case a test left us set otherwise
-    I18n.locale = :en
     DatabaseCleaner.clean
   end
 end
